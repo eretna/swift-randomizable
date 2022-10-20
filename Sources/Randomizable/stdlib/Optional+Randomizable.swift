@@ -22,6 +22,19 @@ import Foundation
 
 extension Optional: Randomizable {
     public static func randomized() -> Wrapped? {
-        return [Wrapped].randomized().first
+        Bool.randomized() ? randomWrappedElement() : .none
+    }
+
+    static func randomWrappedElement() -> Wrapped? {
+        if let type = Wrapped.self as? Randomizable.Type {
+            return type.randomized() as? Wrapped
+        } else if let type = Wrapped.self as? Decodable.Type {
+            do {
+                return try type.randomized() as? Wrapped
+            } catch {
+                return .none
+            }
+        }
+        return .none
     }
 }
